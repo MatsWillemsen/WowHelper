@@ -1,6 +1,5 @@
 import atomac as am
 import time
-import objc
 from AppKit import NSEvent
 
 
