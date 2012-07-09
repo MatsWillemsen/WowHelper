@@ -1,5 +1,6 @@
 import atomac as am
 import time
+from Quartz import *
 from AppKit import NSEvent
 
 
@@ -18,3 +19,8 @@ class WowHelper:
 	def sendAfter(self,secs,keys):
 		self._waitForMouseMove(secs)
 		self.sendKeys(keys)
+	def click(self,x,y):
+		mouseevent = CGEventCreateMouseEvent(None,kCGEventLeftMouseDown,(x,y), 0)
+		CGEventPost(kCGHIDEventTap,mouseevent)
+		mouseevent = CGEventCreateMouseEvent(None,kCGEventLeftMouseUp,(x,y),0)
+		CGEventPost(kCGHIDEventTap,mouseevent)
