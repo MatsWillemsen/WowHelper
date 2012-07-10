@@ -1,0 +1,20 @@
+In order to get this to work you need to have python installed (Which you most likely already have).
+
+I use 2.7.2, so it has only been tested on that version.
+
+You also need to install atomac using:
+
+  easy_install atomac
+
+Besides that, just see the testscript.py and the internals of wowhelper.py to see what you can do.
+Basic functionality is added:
+
+sendKeys(keys) -- Directly send keys to the app. You can enter multiple keys here
+sendAfter(seconds,keys) 
+-- Same as above, but waits the amount of seconds and checks if there's any mouse movement in that time period. 
+-- This is to avoid breaking ToS, and making it a one-to-one action.
+
+click(x,y) -- Clicks the left mouse button on the position. It is very trivial adding other buttons.
+
+You can use these functions after initiating the WowHelper class (see testscript.py)
+
