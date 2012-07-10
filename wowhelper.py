@@ -5,25 +5,30 @@ import string
 import re
 from Quartz import *
 from AppKit import NSEvent
-
+from AppKit import NSWorkspace
+	
 
 class WowHelper:
-	def __init__(self):
-		self.wow = am.getAppRefByBundleId('com.blizzard.worldofwarcraft')
 	def _getWoWPids(self):
-		pids = {}
+		pids = []
 		lines = subprocess.Popen(["/bin/ps","ax","-o","pid,command"], stdout=subprocess.PIPE).communicate()[0]
 		for line in string.split(lines,'\n'):
 			if "Warcraft" in line:
-				pid = re.match("(\d+?)\w+",line).group(0).strip()
-				pids[pid] = line
+				pid = re.match("\s*(\d+?)\w+",line).group(0).strip()
+				pids.append(pid)
+		return pids
 	def _waitForMouseMove(self,secs):
 		originalpos = NSEvent.mouseLocation()
 		while True:
 			time.sleep(secs)
 			newpos = NSEvent.mouseLocation()
 			if(newpos != originalpos):
-				break		
+				if(self._isWowFront() == True):
+					continue
+				else:
+					break
+	def _isWowFront(self):
+		return self.wow.AXFrontmost
 	def sendKeys(self,keys):
 		self.wow.sendKeys(keys)
 	def sendAfter(self,secs,keys):
@@ -34,4 +39,11 @@ class WowHelper:
 		CGEventPost(kCGHIDEventTap,mouseevent)
 		mouseevent = CGEventCreateMouseEvent(None,kCGEventLeftMouseUp,(x,y),0)
 		CGEventPost(kCGHIDEventTap,mouseevent)
-WowHelper()._getWoWPids()
+	def __init__(self):
+		pids = self._getWoWPids()
+		print(pids)
+		if(len(pids) != 0):
+			self.wow = am.getAppRefByPid(int(pids[0]))
+		else:
+			print "World of Warcraft is not running, or is not named 'World of Warcraft'"
+			sys.exit(0)
